@@ -1,3 +1,4 @@
+import asyncio
 from logging import INFO, getLogger
 
 from requests_html import AsyncHTMLSession
@@ -14,13 +15,14 @@ class AsyncDownloader(BaseDownloader):
         self.asession = AsyncHTMLSession()
 
     def __del__(self):
-        self.asession.close()
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.asession.close())
 
     @property
     def cookies(self):
         return self.asession.cookies
 
-    def get(self, url, *args, **kwargs):
+    async def get(self, url, *args, **kwargs):
         """
         Example:
             payload = {'some': 'data'}
@@ -29,7 +31,7 @@ class AsyncDownloader(BaseDownloader):
         """
         return await self.execute("get", url, *args, **kwargs)
 
-    def post(self, url, *args, **kwargs):
+    async def post(self, url, *args, **kwargs):
         """
         Example:
             payload = {'some': 'data'}

@@ -3,10 +3,10 @@ import json
 from crawler_magazine.crawlers import CrawlerInterface
 
 
-class PageCrawler(CrawlerInterface):
-    def __init__(self, url, max_deep=100):
+class IteratorPageCrawler(CrawlerInterface):
+    def __init__(self, url, max_iteration=100):
         super().__init__(url)
-        self.__max_deep = max_deep
+        self.max_iteration = max_iteration
 
     def parse(self, html, json_=None):
         if not json_:
@@ -66,8 +66,20 @@ class PageCrawler(CrawlerInterface):
 
         return (
             set(partial_products)
-            if (index == last_page or index == self.__max_deep)
+            if (index == last_page or index == self.max_iteration)
             else await self._iterate_and_find_partial_products(
                 index + 1, partial_products
             )
         )
+
+
+if __name__ == '__main__':
+    import asyncio
+    from pprint import pprint
+    page_crawler = IteratorPageCrawler(
+        "https://www.magazineluiza.com.br/aquecedor-eletrico/"
+        "ar-e-ventilacao/s/ar/arae/brand---mondial?page={}"
+    )
+    loop = asyncio.get_event_loop()
+    URLS = loop.run_until_complete(page_crawler.crawl())
+    pprint(URLS)

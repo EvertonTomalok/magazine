@@ -8,7 +8,7 @@ class CrawlerInterface(ABC):
         self.url = url
         self.downloader = AsyncDownloader()
 
-    def get_page(self, url=None):
+    async def get_page(self, url=None):
         return await self.downloader.get(url or self.url)
 
     @abstractmethod
