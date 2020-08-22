@@ -12,7 +12,7 @@ class CrawlerInterface(ABC):
         return await self.downloader.get(url or self.url)
 
     @abstractmethod
-    def parse(self, html):
+    def parse(self, html, *args):
         """Need to be implemented"""
 
     @abstractmethod
