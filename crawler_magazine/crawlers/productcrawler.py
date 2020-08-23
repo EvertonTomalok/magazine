@@ -5,7 +5,7 @@ from logging import getLogger, INFO
 import nest_asyncio
 
 from crawler_magazine.crawlers import CrawlerInterface
-from crawler_magazine.model.product import PartialProduct, DetailProduct
+from crawler_magazine.model.product import PartialProduct, DetailProduct, Product
 from crawler_magazine.model.utils import validate_and_parse_model
 from crawler_magazine.utils.strings import normalize_text
 
@@ -129,9 +129,10 @@ class IteratorPageCrawler(CrawlerInterface):
         return default_return
 
 
-class ProductDetail(CrawlerInterface):
-    def __init__(self, url):
+class ProductCrawler(CrawlerInterface):
+    def __init__(self, url, data: dict = None):
         super().__init__(url)
+        self.data = data
 
     def parse(self, html, *args):
         return self._extract_all_product_info(html)
@@ -142,7 +143,11 @@ class ProductDetail(CrawlerInterface):
         )
         product_parsed = self.parse(product_page)
         try:
-            return validate_and_parse_model(product_parsed, DetailProduct)
+            product = validate_and_parse_model(product_parsed, DetailProduct)
+            if self.data:
+                product.update(self.data)
+            product = validate_and_parse_model(product, Product)
+            return product
         except Exception as err:
             logger.error(
                 "Something went wrong trying to crawl a product - "

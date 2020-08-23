@@ -1,6 +1,6 @@
 import asyncio
 
-from crawler_magazine.crawlers.product import ProductDetail, IteratorPageCrawler
+from crawler_magazine.crawlers.productcrawler import ProductCrawler, IteratorPageCrawler
 
 
 class MagazineCrawler:
@@ -20,8 +20,12 @@ class MagazineCrawler:
             IteratorPageCrawler(self.start_url).crawl()
         )
         print(partial_products)
+        print(len(partial_products))
         detail_product_crawler = asyncio.gather(
-            *(ProductDetail(item.get("url")).crawl() for item in partial_products)
+            *(
+                ProductCrawler(url=item.get("url"), data=item).crawl()
+                for item in partial_products
+            )
         )
         all_details = loop.run_until_complete(detail_product_crawler)
         print(all_details)
@@ -31,5 +35,5 @@ class MagazineCrawler:
 if __name__ == '__main__':
     MagazineCrawler(
         "https://www.magazineluiza.com.br/aquecedor-eletrico/"
-        "ar-e-ventilacao/s/ar/arae/brand---mondial?page={}"
+        "ar-e-ventilacao/s/ar/arae/brand---mondial"
     ).crawl()
