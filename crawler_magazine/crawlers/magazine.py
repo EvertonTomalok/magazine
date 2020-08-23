@@ -27,4 +27,3 @@ class MagazineCrawler:
         )
 
         loop.run_until_complete(detail_product_crawler)
-
