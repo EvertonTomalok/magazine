@@ -28,9 +28,3 @@ class MagazineCrawler:
 
         loop.run_until_complete(detail_product_crawler)
 
-
-if __name__ == "__main__":
-    MagazineCrawler(
-        "https://www.magazineluiza.com.br/aquecedor-eletrico/"
-        "ar-e-ventilacao/s/ar/arae/brand---mondial"
-    ).crawl()

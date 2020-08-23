@@ -8,9 +8,6 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-with Database() as db:
-    db._ensure_indexes()
-
 
 @app.route("/")
 def root():
