@@ -5,6 +5,7 @@ from logging import getLogger, INFO
 import nest_asyncio
 
 from crawler_magazine.crawlers import CrawlerInterface
+from crawler_magazine.model.db import Database
 from crawler_magazine.model.product import PartialProduct, DetailProduct, Product
 from crawler_magazine.model.utils import validate_and_parse_model
 from crawler_magazine.utils.strings import normalize_text
@@ -147,6 +148,9 @@ class ProductCrawler(CrawlerInterface):
             if self.data:
                 product.update(self.data)
             product = validate_and_parse_model(product, Product)
+            with Database() as db:
+                inserted_id = db.insert_update_product(product)
+                print(inserted_id)
             return product
         except Exception as err:
             logger.error(
