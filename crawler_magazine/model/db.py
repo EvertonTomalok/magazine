@@ -1,5 +1,4 @@
-from bson import ObjectId
-from pymongo import DESCENDING, MongoClient
+from pymongo import MongoClient
 
 from crawler_magazine.model.settings import MONGODB_SETTINGS
 
@@ -35,14 +34,7 @@ class Database:
                 pass
 
     def insert_update_product(self, data):
-        self.products.update_one(
-            {
-                "sku": data.get("sku")
-            },
-            {
-                "$set": data
-            }
-        )
+        self.products.update_one({"sku": data.get("sku")}, {"$set": data}, upsert=True)
         return f"Added/updated sku {data.get('sku')}"
 
     def count_product_by_brand(self, marca: str):
@@ -53,19 +45,8 @@ class Database:
         if product_aggregate := list(
             self.products.aggregate(
                 [
-                    {
-                        "$match": {
-                            "marca": f"{marca}"
-                        }
-                    },
-                    {
-                        "$group": {
-                            "_id": "$marca",
-                            "count": {
-                                "$sum": 1
-                            }
-                        }
-                    }
+                    {"$match": {"marca": f"{marca}"}},
+                    {"$group": {"_id": "$marca", "count": {"$sum": 1}}},
                 ]
             )
         ):
@@ -74,16 +55,7 @@ class Database:
 
     def count_available_rupture_products(self):
         if available_rupture := self.products.aggregate(
-            [
-                {
-                    "$group": {
-                        "_id": "$estoque",
-                        "count": {
-                            "$sum": 1
-                        }
-                    }
-                }
-            ]
+            [{"$group": {"_id": "$estoque", "count": {"$sum": 1}}}]
         ):
             return {
                 ("disponiveis" if item["_id"] == "S" else "ruptura"): item["count"]

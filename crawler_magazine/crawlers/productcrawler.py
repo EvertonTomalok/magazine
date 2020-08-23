@@ -1,12 +1,12 @@
 import json
 import re
-from logging import getLogger, INFO
+from logging import INFO, getLogger
 
 import nest_asyncio
 
 from crawler_magazine.crawlers import CrawlerInterface
 from crawler_magazine.model.db import Database
-from crawler_magazine.model.product import PartialProduct, DetailProduct, Product
+from crawler_magazine.model.product import DetailProduct, PartialProduct, Product
 from crawler_magazine.model.utils import validate_and_parse_model
 from crawler_magazine.utils.strings import normalize_text
 
@@ -30,25 +30,19 @@ class IteratorPageCrawler(CrawlerInterface):
         return await self._iterate_and_find_partial_products()
 
     async def _iterate_and_find_partial_products(
-            self,
-            index: int = 1,
-            partial_products=None
+        self, index: int = 1, partial_products=None
     ) -> list:
         if not partial_products:
             partial_products = []
 
-        page = await self.get_page(
-            self.url.format(index)
-        )
+        page = await self.get_page(self.url.format(index))
 
         product_page_info = self.get_product_market_info(page)
 
         json_ = self._get_data_json(page)
         last_page = self._get_last_page(json_)
 
-        partial_products.extend(
-            self.parse(page, json_, product_page_info)
-        )
+        partial_products.extend(self.parse(page, json_, product_page_info))
 
         return (
             partial_products
@@ -60,15 +54,17 @@ class IteratorPageCrawler(CrawlerInterface):
 
     @staticmethod
     def _get_last_page(json_) -> int:
-        return json_.get("props", {}) \
-            .get("initialState", {}) \
-            .get("pagination", {}) \
+        return (
+            json_.get("props", {})
+            .get("initialState", {})
+            .get("pagination", {})
             .get("lastPage", 1)
+        )
 
     @staticmethod
     def _get_data_json(request_html):
         if data := request_html.html.xpath(
-                "//script[contains(text(), '__NEXT_DATA__')]"
+            "//script[contains(text(), '__NEXT_DATA__')]"
         ):
             data = data[0].text.replace("__NEXT_DATA__ = ", "")
             data = data.split(";__NEXT_LOADED_PAGES__=[];")[0]
@@ -78,15 +74,15 @@ class IteratorPageCrawler(CrawlerInterface):
     @staticmethod
     def _find_products(json_, product_page_info) -> list:
         products = []
-        for product_info in json_.get("props", {}) \
-                .get("initialState", {}) \
-                .get("products", {}) \
-                .get("navigationShowcase", []):
+        for product_info in (
+            json_.get("props", {})
+            .get("initialState", {})
+            .get("products", {})
+            .get("navigationShowcase", [])
+        ):
 
             installment = (
-                product_info["installment"]
-                if product_info.get("installment")
-                else {}
+                product_info["installment"] if product_info.get("installment") else {}
             )
             product = {
                 "url": product_info.get("url"),
@@ -100,9 +96,7 @@ class IteratorPageCrawler(CrawlerInterface):
             }
             product.update(product_page_info)
             try:
-                products.append(
-                    validate_and_parse_model(product, PartialProduct)
-                )
+                products.append(validate_and_parse_model(product, PartialProduct))
             except Exception as err:
                 logger.error(
                     "Something went wrong trying to crawl a product - "
@@ -139,9 +133,7 @@ class ProductCrawler(CrawlerInterface):
         return self._extract_all_product_info(html)
 
     async def crawl(self):
-        product_page = await self.get_page(
-            self.url
-        )
+        product_page = await self.get_page(self.url)
         product_parsed = self.parse(product_page)
         try:
             product = validate_and_parse_model(product_parsed, DetailProduct)
@@ -161,22 +153,20 @@ class ProductCrawler(CrawlerInterface):
 
     def _extract_all_product_info(self, page_html):
         if json_element := page_html.html.xpath(
-                "//script[contains(text(), 'digitalData = ')]",
-                first=True
+            "//script[contains(text(), 'digitalData = ')]", first=True
         ):
             return {
                 "produto": self._extract_product_name(page_html),
                 "ean": self._extract_ean(json_element.html),
                 "sku": self._extract_sku(json_element.html),
-                "atributos": self._extract_attributes(json_element.html)
+                "atributos": self._extract_attributes(json_element.html),
             }
         return {}
 
     @staticmethod
     def _extract_product_name(req_html):
         if element := req_html.html.xpath(
-                "//h1[@class='header-product__title']",
-                first=True
+            "//h1[@class='header-product__title']", first=True
         ):
             return normalize_text(element.text)
         return ""
@@ -202,7 +192,7 @@ class ProductCrawler(CrawlerInterface):
     def _extract_attributes(element_html):
         attr_type_pattern = r'"attributesTypes": (\[.*\]),'
         attr_value_pattern = r'attributesValues": (\[.*\]),'
-        html = element_html.replace("\'", '"')
+        html = element_html.replace("'", '"')
 
         types = re.findall(attr_type_pattern, html)
         attrs = re.findall(attr_value_pattern, html)

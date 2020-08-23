@@ -1,9 +1,5 @@
 from schematics.models import Model
-from schematics.types import (
-    IntType,
-    StringType,
-    FloatType, DictType,
-)
+from schematics.types import DictType, FloatType, IntType, StringType
 
 
 class PartialProduct(Model):
@@ -24,7 +20,7 @@ class DetailProduct(Model):
     produto = StringType(required=True)
     ean = StringType(required=True)
     sku = StringType(required=True)
-    atributos = DictType(StringType, serialize_when_none=False)
+    atributos = DictType(StringType, serialize_when_none=True)
 
 
 class Product(Model):
@@ -42,5 +38,5 @@ class Product(Model):
     produto = StringType(required=True)
     ean = StringType(required=True)
     sku = StringType(required=True)
-    atributos = DictType(StringType, serialize_when_none=False)
-    metadata = DictType(StringType, serialize_when_none=False)
+    atributos = DictType(StringType, serialize_when_none=True)
+    metadata = DictType(StringType, serialize_when_none=True)
