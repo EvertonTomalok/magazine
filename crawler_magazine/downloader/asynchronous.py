@@ -1,6 +1,7 @@
 import asyncio
 from logging import INFO, getLogger
 
+import backoff
 from requests_html import AsyncHTMLSession
 
 from crawler_magazine.downloader import BaseDownloader
@@ -40,6 +41,12 @@ class AsyncDownloader(BaseDownloader):
         """
         return await self.execute("post", url, *args, **kwargs)
 
+    @backoff.on_exception(
+        backoff.expo,
+        Exception,
+        max_tries=3,
+        max_time=30,
+    )
     async def execute(
         self,
         method: str,

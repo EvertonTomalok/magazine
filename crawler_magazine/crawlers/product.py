@@ -205,23 +205,23 @@ class ProductDetail(CrawlerInterface):
         return {}
 
 
-if __name__ == '__main__':
-    import asyncio
-
-    page_crawler = IteratorPageCrawler(
-        "https://www.magazineluiza.com.br/aquecedor-eletrico/"
-        "ar-e-ventilacao/s/ar/arae/brand---mondial?page={}"
-    )
-
-    loop = asyncio.get_event_loop()
-    partial_products = loop.run_until_complete(page_crawler.crawl())
-    print(partial_products)
-    detail_product_crawler = asyncio.gather(
-        *(ProductDetail(item.get("url")).crawl() for item in partial_products)
-    )
-    all_details = loop.run_until_complete(detail_product_crawler)
-    print(all_details)
-    print(len(all_details))
-    # with open('data.json', 'w') as fp:
-    #     json.dump(partial_products, fp, indent=4)
-    # print(len(partial_products))
+# if __name__ == '__main__':
+#     import asyncio
+#
+#     page_crawler = IteratorPageCrawler(
+#         "https://www.magazineluiza.com.br/aquecedor-eletrico/"
+#         "ar-e-ventilacao/s/ar/arae/brand---mondial?page={}"
+#     )
+#
+#     loop = asyncio.get_event_loop()
+#     partial_products = loop.run_until_complete(page_crawler.crawl())
+#     print(partial_products)
+#     detail_product_crawler = asyncio.gather(
+#         *(ProductDetail(item.get("url")).crawl() for item in partial_products)
+#     )
+#     all_details = loop.run_until_complete(detail_product_crawler)
+#     print(all_details)
+#     print(len(all_details))
+#     # with open('data.json', 'w') as fp:
+#     #     json.dump(partial_products, fp, indent=4)
+#     # print(len(partial_products))
