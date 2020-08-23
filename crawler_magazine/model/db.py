@@ -33,11 +33,11 @@ class Database:
             except TypeError:
                 pass
 
-    def insert_update_product(self, data):
+    def insert_update_product(self, data) -> str:
         self.products.update_one({"sku": data.get("sku")}, {"$set": data}, upsert=True)
         return f"Added/updated sku {data.get('sku')}"
 
-    def count_product_by_brand(self, marca: str):
+    def count_product_by_brand(self, marca: str) -> dict:
         # The same result could be retrieved using `count_documents`
         #   self.products.count_documents({"marca": "MONDIAL"})
         # I think that's a best way to count documents.
@@ -53,7 +53,7 @@ class Database:
             return product_aggregate[0]
         return {"_id": f"{marca}", "count": 0}
 
-    def count_available_rupture_products(self):
+    def count_available_rupture_products(self) -> dict:
         if available_rupture := self.products.aggregate(
             [{"$group": {"_id": "$estoque", "count": {"$sum": 1}}}]
         ):
@@ -63,8 +63,21 @@ class Database:
             }
         return {"disponiveis": 0, "ruptura": 0}
 
-    def find_ean(self, ean: str):
-        return self.products.find_one({"ean": ean})
+    def find_ean(self, ean: str) -> list:
+        return list(self.products.find({"ean": ean}, {"_id": 0}))
 
-    def find_sku(self, sku: str):
-        return self.products.find_one({"sku": sku})
+    def find_sku(self, sku: str) -> dict:
+        return self.products.find_one({"sku": sku}, {"_id": 0})
+
+    def _ensure_indexes(self):
+        """
+        Create indexes if it not exists
+        """
+        self.products.create_index([("ean", 1)], name="ean_index", background=True)
+        self.products.create_index(
+            [("sku", 1)], name="sku_index", background=True, unique=True
+        )
+        self.products.create_index([("marca", 1)], name="marca_index", background=True)
+        self.products.create_index(
+            [("estoque", 1)], name="estoque_index", background=True
+        )

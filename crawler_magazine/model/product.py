@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from schematics.models import Model
-from schematics.types import DictType, FloatType, IntType, StringType
+from schematics.types import DateTimeType, DictType, FloatType, IntType, StringType
 
 
 class PartialProduct(Model):
@@ -39,4 +41,4 @@ class Product(Model):
     ean = StringType(required=True)
     sku = StringType(required=True)
     atributos = DictType(StringType, serialize_when_none=True)
-    metadata = DictType(StringType, serialize_when_none=True)
+    last_update = DateTimeType(default=datetime.now)

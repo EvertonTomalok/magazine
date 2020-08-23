@@ -2,7 +2,6 @@ necessary-packs:
 	$(SUDO) pip3 install pipenv==2020.6.2
 
 .PHONY: setup
-setup: SUDO := sudo
 setup: necessary-packs
 setup:
 	echo "Setup"
