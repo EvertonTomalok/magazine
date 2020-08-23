@@ -1,11 +1,15 @@
-import re
 import json
+import re
 from logging import getLogger, INFO
+
+import nest_asyncio
 
 from crawler_magazine.crawlers import CrawlerInterface
 from crawler_magazine.model.product import PartialProduct, DetailProduct
 from crawler_magazine.model.utils import validate_and_parse_model
 from crawler_magazine.utils.strings import normalize_text
+
+nest_asyncio.apply()
 
 logger = getLogger()
 logger.setLevel(INFO)
@@ -148,8 +152,8 @@ class ProductDetail(CrawlerInterface):
 
     def _extract_all_product_info(self, page_html):
         if json_element := page_html.html.xpath(
-            "//script[contains(text(), 'digitalData = ')]",
-            first=True
+                "//script[contains(text(), 'digitalData = ')]",
+                first=True
         ):
             return {
                 "produto": self._extract_product_name(page_html),
@@ -175,7 +179,7 @@ class ProductDetail(CrawlerInterface):
 
         if ean_list:
             return ean_list[0]
-        return None
+        return "NOT FOUND"
 
     @staticmethod
     def _extract_sku(element_html):
@@ -183,7 +187,7 @@ class ProductDetail(CrawlerInterface):
         sku_list = re.findall(sku_pattern, element_html)
         if sku_list:
             return sku_list[0]
-        return None
+        return "NOT FOUND"
 
     @staticmethod
     def _extract_attributes(element_html):
@@ -204,18 +208,20 @@ class ProductDetail(CrawlerInterface):
 if __name__ == '__main__':
     import asyncio
 
-    # page_crawler = IteratorPageCrawler(
-    #     "https://www.magazineluiza.com.br/aquecedor-eletrico/"
-    #     "ar-e-ventilacao/s/ar/arae/brand---mondial?page={}"
-    # )
-
-    page_crawler = ProductDetail(
-        "https://www.magazineluiza.com.br/aquecedor-halogeno-mondial-comfort-air-8971-01-dispositivo-de-seguranca/"
-        "p/020685000/ar/arae/"
+    page_crawler = IteratorPageCrawler(
+        "https://www.magazineluiza.com.br/aquecedor-eletrico/"
+        "ar-e-ventilacao/s/ar/arae/brand---mondial?page={}"
     )
+
     loop = asyncio.get_event_loop()
     partial_products = loop.run_until_complete(page_crawler.crawl())
     print(partial_products)
+    detail_product_crawler = asyncio.gather(
+        *(ProductDetail(item.get("url")).crawl() for item in partial_products)
+    )
+    all_details = loop.run_until_complete(detail_product_crawler)
+    print(all_details)
+    print(len(all_details))
     # with open('data.json', 'w') as fp:
     #     json.dump(partial_products, fp, indent=4)
     # print(len(partial_products))
