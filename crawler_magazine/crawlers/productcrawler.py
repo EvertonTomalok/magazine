@@ -30,8 +30,15 @@ class IteratorPageCrawler(CrawlerInterface):
         return await self._iterate_and_find_partial_products()
 
     async def _iterate_and_find_partial_products(
-        self, index: int = 1, partial_products=None
+        self, index: int = 1, partial_products: list = None
     ) -> list:
+        """
+        Iterate from all the pages and crawl information about
+        products, and return a list containing it
+        :param index: int
+        :param partial_products: list
+        :return: list [ PartialProduct ]
+        """
         if not partial_products:
             partial_products = []
 
@@ -54,6 +61,11 @@ class IteratorPageCrawler(CrawlerInterface):
 
     @staticmethod
     def _get_last_page(json_) -> int:
+        """
+        Found the total pages to iterate
+        :param json_: DICT
+        :return: int
+        """
         return (
             json_.get("props", {})
             .get("initialState", {})
@@ -62,7 +74,12 @@ class IteratorPageCrawler(CrawlerInterface):
         )
 
     @staticmethod
-    def _get_data_json(request_html):
+    def _get_data_json(request_html) -> dict:
+        """
+        Retrieves json who has all product info in the page and parse it
+        :param request_html: Current Page
+        :return: dict
+        """
         if data := request_html.html.xpath(
             "//script[contains(text(), '__NEXT_DATA__')]"
         ):
@@ -72,7 +89,15 @@ class IteratorPageCrawler(CrawlerInterface):
         return {}
 
     @staticmethod
-    def _find_products(json_, product_page_info) -> list:
+    def _find_products(json_: dict, product_page_info: dict) -> list:
+        """
+        It receives the json_ that has all information about products in the page,
+        and the informations about actual section in page, like
+        `ar e ventilação > aquecedor > aquecedor elétrico`
+        :param json_: JSON { props, ... }
+        :param product_page_info: JSON { departmento, categoria, subcategoria }
+        :return: LIST [ PartialProduct ]
+        """
         products = []
         for product_info in (
             json_.get("props", {})
@@ -107,6 +132,11 @@ class IteratorPageCrawler(CrawlerInterface):
 
     @staticmethod
     def get_product_market_info(page_html) -> dict:
+        """
+        It crawl the category, department, and sub_category from page
+        :param page_html: Current page HTML
+        :return: dict
+        """
         default_return = {
             "departmento": None,
             "categoria": None,
@@ -126,6 +156,13 @@ class IteratorPageCrawler(CrawlerInterface):
 
 class ProductCrawler(CrawlerInterface):
     def __init__(self, url, data: dict = None):
+        """
+        This Class will crawl a page, based in the url received.
+        If some data was passed in data argument, it'll be joined
+        with the content crawled later.
+        :param url: str
+        :param data: dict
+        """
         super().__init__(url)
         self.data = data
 
@@ -157,7 +194,12 @@ class ProductCrawler(CrawlerInterface):
             )
             return {}
 
-    def _extract_all_product_info(self, page_html):
+    def _extract_all_product_info(self, page_html) -> dict:
+        """
+        Crawl detail information in the current product page
+        :param page_html: HTML
+        :return: dict
+        """
         if json_element := page_html.html.xpath(
             "//script[contains(text(), 'digitalData = ')]", first=True
         ):
@@ -170,7 +212,7 @@ class ProductCrawler(CrawlerInterface):
         return {}
 
     @staticmethod
-    def _extract_product_name(req_html):
+    def _extract_product_name(req_html) -> str:
         if element := req_html.html.xpath(
             "//h1[@class='header-product__title']", first=True
         ):
@@ -178,7 +220,7 @@ class ProductCrawler(CrawlerInterface):
         return ""
 
     @staticmethod
-    def _extract_ean(element_html):
+    def _extract_ean(element_html) -> str:
         ean_pattern = r'variantions.{0,100}"ean":"(.{10,25})",'
         ean_list = re.findall(ean_pattern, element_html)
 
@@ -187,7 +229,7 @@ class ProductCrawler(CrawlerInterface):
         return "NOT FOUND"
 
     @staticmethod
-    def _extract_sku(element_html):
+    def _extract_sku(element_html) -> str:
         sku_pattern = r"'id': '(.*)', // parent id"
         sku_list = re.findall(sku_pattern, element_html)
         if sku_list:
@@ -195,7 +237,7 @@ class ProductCrawler(CrawlerInterface):
         return "NOT FOUND"
 
     @staticmethod
-    def _extract_attributes(element_html):
+    def _extract_attributes(element_html) -> dict:
         attr_type_pattern = r'"attributesTypes": (\[.*\]),'
         attr_value_pattern = r'attributesValues": (\[.*\]),'
         html = element_html.replace("'", '"')

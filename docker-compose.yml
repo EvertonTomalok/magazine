@@ -6,7 +6,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - "$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/"
+      - "./.mongodb:/data/db"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=magazine
       - MONGO_INITDB_ROOT_PASSWORD=magazine
