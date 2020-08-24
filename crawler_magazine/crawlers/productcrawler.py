@@ -134,11 +134,17 @@ class ProductCrawler(CrawlerInterface):
 
     async def crawl(self):
         product_page = await self.get_page(self.url)
+
+        # Retrieving DetailedProductInfo
         product_parsed = self.parse(product_page)
         try:
             product = validate_and_parse_model(product_parsed, DetailProduct)
+
+            # joining PartialProductInfo with DetailedProductInfo
             if self.data:
                 product.update(self.data)
+
+            # Including data in MongoDB
             product = validate_and_parse_model(product, Product)
             with Database() as db:
                 inserted_id = db.insert_update_product(product)

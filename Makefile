@@ -14,6 +14,9 @@ setup-dev:
 	echo "Setup dev"
 	pipenv run pipenv install --deploy --system --dev
 
+crawl:
+	pipenv run python -m scripts.crawlmagazineluiza
+
 .PHONY: autoflake
 autoflake:
 	pipenv run autoflake -r $(AUTOFLAKE_OPTIONS) --exclude */snapshots --remove-unused-variables --remove-all-unused-imports  **/ | tee autoflake.log
