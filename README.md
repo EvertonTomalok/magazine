@@ -17,7 +17,7 @@ Após o termino da operação, os `endpoints` estarão disponíveis.
 Para efetuar o crawler da página deste [link](https://www.magazineluiza.com.br/aquecedor-eletrico/ar-e-ventilacao/s/ar/arae/brand---mondial), 
 utilize `make crawl`.
 
-### (Opicional) Criar indices necessários
+### (Opcional) Criar indices necessários
 
 Utilize o comando `make index`
 
