@@ -21,29 +21,30 @@ utilize `make crawl`.
 As rotas abaixo estão diponiveis para consulta em `localhost`, na porta `5000` -> `http://localhost:5000`
 
 ### Procurar Ean's 
-endpoint: `/find-ean/<ean>`
-paramaters: `ean` -> string
-return: `JSON` 
+endpoint: `/find-ean/<ean>` <br>
+paramaters: `ean` -> string <br>
+return: `JSON` <br>
 
 Exemplo: `http://localhost:5000/find-ean/ean-123456`
 
 ### Procurar por um Sku 
-endpoint: `/find-sku/<sku>`
-paramaters: `sku` -> string
-return: `JSON` 
+endpoint: `/find-sku/<sku>`<br>
+paramaters: `sku` -> string <br>
+return: `JSON` <br>
 Exemplo: `http://localhost:5000/find-sku/sku-123456`
 
 
 ### Countar numeros de items por marca
-endpoint: `/count-items-by-brand/<brand>`
-paramaters: `brand` -> string
-return: `JSON` 
+endpoint: `/count-items-by-brand/<brand>` <br>
+paramaters: `brand` -> string <br>
+return: `JSON` <br>
 Exemplo: `http://0.0.0.0:5000/count-items-by-brand/MONDIAL`
 
+
 ### Countar numeros de items disponiveis e rupturas
-endpoint: `/available-items`
-return: `JSON` 
-Exemplo: `http://0.0.0.0:5000/available-items`
+endpoint: `/available-items` <br>
+return: `JSON` <br>
+Exemplo: `http://0.0.0.0:5000/available-items` <br>
 
 
 ## Overview da arquitetura
