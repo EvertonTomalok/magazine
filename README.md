@@ -2,7 +2,9 @@
 
 ## Setup
 
-Para iniciar  o processo, é necessário que as dependências do projeto estejam corretamente instaladas. para isso
+Abra um terminal no `root` do projeto.
+
+Para iniciar  o processo, é necessário que as dependências do projeto estejam corretamente instaladas. Para isso
 digite `make setup`
 
 ## Disponibilizando App e o banco de dados
