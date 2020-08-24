@@ -22,6 +22,16 @@ class IteratorPageCrawler(CrawlerInterface):
         self.max_iteration = max_iteration
 
     def parse(self, html, json_=None, product_page_info=None):
+        """
+        It receives the  urrent page html json_ that has all information about products
+        in the page, and the informations about actual section in page, like
+        `ar e ventilação > aquecedor > aquecedor elétrico`, and return all products
+        found in this page
+        :param html: HTML
+        :param json_: JSON { props, ... }
+        :param product_page_info: JSON { departmento, categoria, subcategoria }
+        :return: LIST [ PartialProduct ]
+        """
         if not json_:
             json_ = self._get_data_json(html)
         return self._find_products(json_, product_page_info)
