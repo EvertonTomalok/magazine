@@ -59,8 +59,9 @@ class AsyncDownloader(BaseDownloader):
         if method.lower() not in ["get", "post"]:
             raise ValueError
 
-        content = dict()
-        content["headers"] = headers if headers else self.custom_header
+        content = {
+            "headers": headers if headers else self.custom_header
+        }
 
         if payload:
             content["data"] = payload
