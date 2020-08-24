@@ -5,17 +5,17 @@
 Para iniciar  o processo, é necessário que as dependências do projeto estejam corretamente instaladas. para isso
 digite `make setup`
 
-## Populando banco de dados
-
-Para efetuar o crawler da página deste [link](https://www.magazineluiza.com.br/aquecedor-eletrico/ar-e-ventilacao/s/ar/arae/brand---mondial), 
-utilize `make crawl`.
-
-## Disponibilizando App
+## Disponibilizando App e o banco de dados
 
 O ambiente pode ser "erguido" utilizando o comando `make sbuild` (irá solicitar o root para montar a imagem do mongodb),
 ou `make up`. 
 
 Após o termino da operação, os `endpoints` estarão disponíveis.
+
+## Populando banco de dados
+
+Para efetuar o crawler da página deste [link](https://www.magazineluiza.com.br/aquecedor-eletrico/ar-e-ventilacao/s/ar/arae/brand---mondial), 
+utilize `make crawl`.
 
 ## Endpoints
 As rotas abaixo estão diponiveis para consulta em `localhost`, na porta `5000` -> `http://localhost:5000`
