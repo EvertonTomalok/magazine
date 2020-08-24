@@ -17,6 +17,9 @@ setup-dev:
 crawl:
 	pipenv run python -m scripts.crawlmagazineluiza
 
+index:
+	pipenv run python -m scripts.create_indexes
+
 .PHONY: autoflake
 autoflake:
 	pipenv run autoflake -r $(AUTOFLAKE_OPTIONS) --exclude */snapshots --remove-unused-variables --remove-all-unused-imports  **/ | tee autoflake.log

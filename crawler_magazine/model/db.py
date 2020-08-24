@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 
 from crawler_magazine.model.settings import MONGODB_SETTINGS
+from crawler_magazine.utils.floats import float_to_decimal
 
 
 class Database:
@@ -33,14 +34,20 @@ class Database:
             except TypeError:
                 pass
 
-    def insert_update_product(self, data) -> str:
+    def insert_update_product(self, data: dict) -> str:
+        # Tranforming float in decimal type
+        if data.get("valor_parcela") and data.get("preco_por"):
+            data["valor_parcela"], data["preco_por"] = (
+                float_to_decimal(data["valor_parcela"]),
+                float_to_decimal(data["preco_por"]),
+            )
         self.products.update_one({"sku": data.get("sku")}, {"$set": data}, upsert=True)
         return f"Added/updated sku {data.get('sku')}"
 
     def count_product_by_brand(self, marca: str) -> dict:
         # The same result could be retrieved using `count_documents`
         #   self.products.count_documents({"marca": "MONDIAL"})
-        # I think that's a best way to count documents.
+        # I think the code above is the best to count documents.
 
         if product_aggregate := list(
             self.products.aggregate(
