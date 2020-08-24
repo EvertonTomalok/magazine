@@ -7,6 +7,8 @@ Abra um terminal no `root` do projeto.
 Para iniciar  o processo, é necessário que as dependências do projeto estejam corretamente instaladas. Para isso
 digite `make setup`
 
+Obs.: É necessário ter o `docker` e `docker-compose` configurados na máquina.
+
 ## Disponibilizando App e o banco de dados
 
 O ambiente pode ser "erguido" utilizando o comando `make sbuild` (irá solicitar o root para montar a imagem do mongodb),
