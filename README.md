@@ -2,7 +2,9 @@
 
 ## Setup
 
-Para iniciar  o processo, é necessário que as dependências do projeto estejam corretamente instaladas. para isso
+Abra um terminal no `root` do projeto.
+
+Para iniciar  o processo, é necessário que as dependências do projeto estejam corretamente instaladas. Para isso
 digite `make setup`
 
 ## Disponibilizando App e o banco de dados
@@ -17,7 +19,7 @@ Após o termino da operação, os `endpoints` estarão disponíveis.
 Para efetuar o crawler da página deste [link](https://www.magazineluiza.com.br/aquecedor-eletrico/ar-e-ventilacao/s/ar/arae/brand---mondial), 
 utilize `make crawl`.
 
-### (Opicional) Criar indices necessários
+### (Opcional) Criar indices necessários
 
 Utilize o comando `make index`
 
