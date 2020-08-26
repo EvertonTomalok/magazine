@@ -8,7 +8,7 @@ logger.setLevel(INFO)
 
 
 class BaseDownloader(ABC):
-    def __init__(self, header: str = None, proxy: dict = None):
+    def __init__(self, header: dict = None, proxy: dict = None):
         self._header = header or self.custom_header
         self.proxies = proxy
 
@@ -32,8 +32,9 @@ class BaseDownloader(ABC):
     def custom_header(self):
         return {
             "User-Agent": (
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/84.0.4147.125 Safari/537.36"
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/84.0.4147.125 "
+                "Safari/537.36"
             ),
         }
 

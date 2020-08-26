@@ -232,17 +232,14 @@ class ProductCrawler(CrawlerInterface):
     @staticmethod
     def _extract_ean(element_html) -> str:
         ean_pattern = r'variantions.{0,100}"ean":"(.{10,25})",'
-        ean_list = re.findall(ean_pattern, element_html)
-
-        if ean_list:
+        if ean_list := re.findall(ean_pattern, element_html):
             return ean_list[0]
         return "NOT FOUND"
 
     @staticmethod
     def _extract_sku(element_html) -> str:
         sku_pattern = r"'id': '(.*)', // parent id"
-        sku_list = re.findall(sku_pattern, element_html)
-        if sku_list:
+        if sku_list := re.findall(sku_pattern, element_html):
             return sku_list[0]
         return "NOT FOUND"
 

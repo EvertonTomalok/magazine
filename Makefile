@@ -38,7 +38,7 @@ lint: ISORT_OPTIONS := --check-only
 lint: BLACK_OPTIONS := --check
 lint: autoflake isort black
 	pipenv run mypy **/*.py --ignore-missing-imports
-	pipenv run flake8 ./lmx --ignore=W291
+	pipenv run flake8 ./crawler_magazine --ignore=W291
 
 .PHONY: format
 format: AUTOFLAKE_OPTIONS := --in-place
