@@ -42,14 +42,14 @@ return: `JSON` <br>
 Exemplo: `http://localhost:5000/find-sku/sku-123456`
 
 
-### Countar numeros de items por marca
+### Contar numeros de items por marca
 endpoint: `/count-items-by-brand/<brand>` <br>
 paramaters: `brand` -> string <br>
 return: `JSON` <br>
 Exemplo: `http://0.0.0.0:5000/count-items-by-brand/MONDIAL`
 
 
-### Countar numeros de items disponiveis e rupturas
+### Contar numeros de items disponiveis e rupturas
 endpoint: `/available-items` <br>
 return: `JSON` <br>
 Exemplo: `http://0.0.0.0:5000/available-items` <br>
