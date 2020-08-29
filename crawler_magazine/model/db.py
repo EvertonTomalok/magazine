@@ -52,13 +52,13 @@ class Database:
         if product_aggregate := list(
             self.products.aggregate(
                 [
-                    {"$match": {"marca": f"{marca}"}},
+                    {"$match": {"marca": marca}},
                     {"$group": {"_id": "$marca", "count": {"$sum": 1}}},
                 ]
             )
         ):
             return product_aggregate[0]
-        return {"_id": f"{marca}", "count": 0}
+        return {"_id": marca, "count": 0}
 
     def count_available_rupture_products(self) -> dict:
         if available_rupture := self.products.aggregate(
